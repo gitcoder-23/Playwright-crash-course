@@ -1,9 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-
-test.use({ headless: true })
 test.describe('Dummy group', () => {
-    test.only('Login', {
+    test('Login', {
         annotation: {
             type: "issue",
             description: "There is some issue"
