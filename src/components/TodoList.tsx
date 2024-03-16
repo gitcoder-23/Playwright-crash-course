@@ -9,15 +9,34 @@ export const TodoList = () => {
     const [todos, setTodos] = useState<TodoItem[]>([]);
     const [newTodo, setNewTodo] = useState<TodoItem | null>(null);
 
+    useEffect(() => {
+        (async () => {
+            const response = await (await fetch('http://localhost:3000/todos')).json();
+            setTodos(response.todos)
+        })();
+    }, []);
+
     const handleAddTodo = async () => {
         if (newTodo && newTodo.value.trim() !== '') {
-            setTodos([...todos, newTodo])
+            let response = await (await fetch('http://localhost:3000/addTodo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newTodo)
+            })).json()
+            console.log(response);
+
+            setTodos(response.todos)
             setNewTodo(null);
         }
     }
 
     const handleDelete = async (id: number) => {
-        setTodos(todos.filter(todo => todo.id !== id))
+        let response = await (await fetch(`http://localhost:3000/deleteTodo/${id}`, {
+            method: 'DELETE',
+        })).json()
+        setTodos(response.todos)
     }
 
     return (
